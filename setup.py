@@ -8,5 +8,7 @@ setup(
     install_requires=[
         'numpy',
         'warp-lang',
+        'trimesh',
+        'pillow',
     ],
 )
