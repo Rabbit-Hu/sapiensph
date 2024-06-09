@@ -7,5 +7,6 @@ setup(
     package_dir={'':'src'},
     install_requires=[
         'numpy',
+        'warp-lang',
     ],
 )

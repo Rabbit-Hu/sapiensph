@@ -19,6 +19,8 @@ class SPHConfig:
         self.hash_grid_dim = 128
         self.kernel_size = 1e-2
         self.particle_diameter = self.kernel_size
+        self.density_err_min = -0.01
+        self.density_err_max = 1e9
 
         ################ Physics config ################
         self.gravity = np.array([0, 0, -9.8], dtype=np.float32)
@@ -28,8 +30,10 @@ class SPHConfig:
         self.max_velocity = (
             1.0  # estimated max velocity for collision detection, TODO: add clamping
         )
-        self.damping = 1e-3  # damping energy: 0.5 * damping * v^2
-
+        self.damping = 0.0  # damping energy: 0.5 * damping * v^2, TODO: add damping
+        self.boundary_min = np.array([-0.01, -0.01, 0.0], dtype=np.float32)
+        self.boundary_max = np.array([0.11, 0.25, 1e9], dtype=np.float32)
+        
 
 class SPHSystem(sapien.System):
     def __init__(
@@ -121,7 +125,7 @@ class SPHSystem(sapien.System):
         self.m = rho_0 * self.config.particle_diameter ** 3.0
         self.beta = 2.0 * (self.config.time_step * self.m / rho_0) ** 2.0
         self.delta = 1.0 / (self.beta * (sum_grad_dot_grad + np.dot(sum_grad, sum_grad)))
-        print(f"sum_W = {sum_W}, m = {self.m}, beta = {self.beta}, delta = {self.delta}")
+        # print(f"sum_W = {sum_W}, m = {self.m}, beta = {self.beta}, delta = {self.delta}")
 
     def _add_particles(self, positions: np.ndarray):
         p_begin = self.n_particles
@@ -194,6 +198,8 @@ class SPHSystem(sapien.System):
                     self.pressure_accs,
                     self.config.gravity,
                     self.config.time_step,
+                    self.config.boundary_min,
+                    self.config.boundary_max,
                 ],
                 outputs=[self.positions, self.velocities],
             )
@@ -208,6 +214,8 @@ class SPHSystem(sapien.System):
                     self.positions,
                     self.config.kernel_size,
                     self.config.rest_density,
+                    self.config.density_err_min,
+                    self.config.density_err_max,
                     self.m,
                     self.delta,
                 ],

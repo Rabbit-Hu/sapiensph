@@ -10,10 +10,10 @@ from sapiensph.sph_system import SPHConfig, SPHSystem
 from sapiensph.sph_component import SPHComponent
 
 
-sapien.render.set_viewer_shader_dir("rt")
-sapien.render.set_camera_shader_dir("rt")
-sapien.render.set_ray_tracing_samples_per_pixel(8)
-sapien.render.set_ray_tracing_denoiser("oidn")
+# sapien.render.set_viewer_shader_dir("rt")
+# sapien.render.set_camera_shader_dir("rt")
+# sapien.render.set_ray_tracing_samples_per_pixel(8)
+# sapien.render.set_ray_tracing_denoiser("oidn")
 
 
 def init_camera(scene: sapien.Scene):
@@ -70,12 +70,15 @@ def main():
     viewer.render()
     
     render_every = 20
-    save_render = True
-    save_dir = "output/example2"
+    save_render = False
+    save_dir = "output/example"
     os.makedirs(save_dir, exist_ok=True)
     
-    for time_step in range(2000):
-        system.step()
+    # print(f"System particles: {system.n_particles}")
+    
+    for time_step in range(4000):
+        with wp.ScopedTimer("time step"):
+            system.step()
 
         if time_step % render_every == 0:
             system.update_render()
@@ -90,7 +93,7 @@ def main():
                 rgba.save(os.path.join(save_dir, f"step_{(time_step + 1) // render_every:04d}.png"))
 
 
-# ffmpeg -framerate 50 -i output/example2/step_%04d.png -c:v libx264 -crf 0 output/example2.mp4
+# ffmpeg -framerate 50 -i output/example/step_%04d.png -c:v libx264 -crf 0 output/example.mp4
 
 if __name__ == "__main__":
     main()
