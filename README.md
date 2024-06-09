@@ -1,4 +1,6 @@
-# sapiensph
+# SAPIEN SPH
+
+![example](images/example_reduced.gif)
 
 A simple [PCISPH](https://doi.org/10.1145/1576246.1531346) implementation using [NVIDIA Warp](https://github.com/NVIDIA/warp) and [SAPIEN](https://github.com/haosulab/SAPIEN). This is my homework project for the course [CSE 291 (SP 2024 C00) Physics Simulation](https://cseweb.ucsd.edu/~alchern/teaching/cse291_sp24/) by Prof. Albert Chern at UCSD. This implementation is very simple and was done in less than a day, including reading the paper and coding. 
 

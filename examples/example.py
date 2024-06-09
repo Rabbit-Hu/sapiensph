@@ -95,5 +95,9 @@ def main():
 
 # ffmpeg -framerate 50 -i output/example/step_%04d.png -c:v libx264 -crf 0 output/example.mp4
 
+# ffmpeg -framerate 50 -i output/example/step_%04d.png -filter_complex "[0:v] palettegen" output/example_palette.png
+# ffmpeg -framerate 50 -i output/example/step_%04d.png -i output/example_palette.png -filter_complex "fps=25,scale=512:-1 [new];[new][1:v] paletteuse" output/example.gif
+# gifsicle -O3 output/example.gif --lossy=100 -o output/example_reduced.gif
+
 if __name__ == "__main__":
     main()
